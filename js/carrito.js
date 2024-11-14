@@ -120,11 +120,13 @@ function agregarAlCarrito(productId) {
     if (carrito[productId]) {
         if (carrito[productId].cantidad < producto.stock) {
             carrito[productId].cantidad++;
+            alert(`El producto "${producto.name}" fue agregado al carrito con éxito!`);
         } else {
             alert("Estoque insuficiente!");
         }
     } else {
         carrito[productId] = { ...producto, cantidad: 1 };
+        alert(`El producto "${producto.name}" fue agregado al carrito con éxito!`);
     }
 
     guardarCarritoNoLocalStorage();
