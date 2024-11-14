@@ -1,4 +1,11 @@
-// Variável para armazenar los productos en carrito
+/**
+ * Programacion 1
+ * Contreras, Nairut
+ * Gesualdi, Afonso
+ */
+
+'use strict'
+// Variable para agregar los productos al carrito
 let carrito = {};
 
 // Funcion para cargar el carrito del localStorange
@@ -95,7 +102,7 @@ function renderCartModal() {
             carritoContainer.appendChild(carritoItem);
         }
 
-        // Adiciona la cantidade total de itens y el valor total
+        // agregar la cantidade total de itens y el valor total
         const totalContainer = document.createElement("div");
         totalContainer.className = "total-info d-flex justify-content-between mt-3";
         
@@ -146,8 +153,8 @@ function checkoutItem(productId) {
         alert("Estoque insuficiente!");
     }
 
-    guardarCarritoNoLocalStorage();  // Salva as mudanças no localStorage
-    renderCartModal();  // Re-renderiza o modal para atualizar os valores
+    guardarCarritoNoLocalStorage();  // Salva localStorage
+    renderCartModal();  // actualizar os valores
 }
 
 // Funcion para remover la cantidad de item

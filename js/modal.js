@@ -1,13 +1,21 @@
+/**
+ * Programacion 1
+ * Contreras, Nairut
+ * Gesualdi, Afonso
+ */
+
+'use strict'
+
 function openModal(productoID) {
-    // Cria o background do modal com classes CSS
+    // Cria el background modal con classes CSS
     const backgroundModal = document.createElement("div");
     backgroundModal.classList.add("modal-background");
 
-    // Cria o conteúdo do modal
+    // Cria el contenido de modal
     const modalContent = document.createElement("div");
     modalContent.classList.add("modal-content", "w-50", "px-3", "d-flex", "flex-col");
 
-    // Adiciona o conteúdo do modal
+    // Adiciona el contenido del modal
     modalContent.innerHTML = `
         <div class="d-flex flex-column justify-content-between align-items-center w-100">
             <div class="d-flex flex-row justify-content-between align-items-center w-100">
@@ -35,24 +43,24 @@ function openModal(productoID) {
         
     `;
 
-    // Adiciona o modal ao fundo
+    // Add el modal al fondo
     backgroundModal.appendChild(modalContent);
     document.body.appendChild(backgroundModal);
 
-    // Mostra o modal com a classe "show"
+    // Muestro el modal con la classe "show"
     setTimeout(() => backgroundModal.classList.add("show"), 10);
 
-    // Fecha o modal ao clicar no botão de fechamento
+    // Cierre el modal al clicar en btn de cierre
     document.getElementById("closeModal").addEventListener("click", () => {
         backgroundModal.classList.remove("show");
         setTimeout(() => document.body.removeChild(backgroundModal), 300);
     });
 
-    // Busca o produto usando a lista global
+    // Bucasmo el producto usando la global list
     const producto = productosGlobal.find(p => p.id === productoID);
 
     if (producto) {
-        // Atualiza la descripcion y la imagem de produto
+        // Actualiza la descripcion y la imagem de produto
         document.getElementById("productoDescription").innerText = producto.other;
         const productoImage = document.createElement("img");
         productoImage.src = producto.image;
@@ -60,7 +68,7 @@ function openModal(productoID) {
         productoImage.classList.add("img-fluid", "img-stl");
         document.getElementById("productoImage").appendChild(productoImage);
 
-        // Atualiza el precio de produto
+        // Actualiza el precio de produto
         document.getElementById("productPrice").innerText = `U$${producto.price.toLocaleString()}`;
 
         // Configura el boton de agregar al carrito
