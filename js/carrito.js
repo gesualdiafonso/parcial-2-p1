@@ -5,10 +5,9 @@
  */
 
 'use strict'
+
 // Variable para agregar los productos al carrito
 let carrito = {};
-
-
 
 // Funcion para cargar el carrito del localStorange
 function cargarCarritoDeLocalStorage() {
@@ -27,6 +26,8 @@ function guardarCarritoNoLocalStorage() {
 cargarCarritoDeLocalStorage();
 renderCartModal();
 
+// Función que abre el carrito
+document.querySelector(".carrito").addEventListener("click", openCarrito);
 /**
  * function openCarrito() {
     if (!document.getElementById("modal-back")) {
@@ -228,7 +229,7 @@ function renderCartModal() {
             title.className = "card-title";
             title.textContent = item.name;
 
-            // Aqui estão as alterações sugeridas
+            // Aquí están los cambios sugeridos
             const stockInfo = document.createElement("span");
             stockInfo.className = "card-text text-body-secondary p-1";
             stockInfo.textContent = `Restan ${item.stock} en stock`;
@@ -241,54 +242,55 @@ function renderCartModal() {
             priceInfo.className = "h3 text-center fw-semibold my-lg-5";
             priceInfo.textContent = `U$${itemTotal.toLocaleString()}`;
 
-            // Novo contêiner para stock e cantidad
+            // Nuevo contenedor para stock y cantidad
             const stockCantidadContainer = document.createElement("div");
-            stockCantidadContainer.className = "d-flex justify-content-between my-2"; // Classe para organizar layout flexível
+            stockCantidadContainer.className = "d-flex justify-content-between my-2"; // Clase para organizar el diseño flexible
             stockCantidadContainer.appendChild(stockInfo);
             stockCantidadContainer.appendChild(quantityInfo);
 
-            // Adiciona os elementos ao cardBody
+            // Añade los elementos al cardBody
             cardBody.appendChild(title);
-            cardBody.appendChild(stockCantidadContainer); // Adiciona o contêiner novo
+            cardBody.appendChild(stockCantidadContainer); // Añade el nuevo contenedor
             cardBody.appendChild(priceInfo);
 
-            // Ajusta os botões
+            // Ajusta los botones
             const buttonCard = document.createElement("div");
-            buttonCard.className = "button-card d-flex justify-content-around mt-1 mb-3"; // Classe para organizar os botões
+            buttonCard.className = "button-card d-flex justify-content-around mt-1 mb-3"; // Clase para organizar los botones
 
             const addButton = document.createElement("button");
             addButton.type = "button";
-            addButton.className = "btn btn-primary";
+            addButton.className = "btn btn-primary mx-auto";
             addButton.textContent = "Agregar más";
-            addButton.addEventListener("click", () => checkoutItem(productoId));
+            addButton.addEventListener("click", function () {
+                checkoutItem(productoId);
+            });
 
-            const removeButton = document.createElement("button");
-            removeButton.type = "button";
-            removeButton.className = "btn btn-primary";
-            removeButton.textContent = "Borrar";
-            removeButton.addEventListener("click", () => removeFromCart(productoId));
+            const deleteButton = document.createElement("button");
+            deleteButton.type = "button";
+            deleteButton.className = "btn btn-danger mx-auto";
+            deleteButton.textContent = "Borrar";
+            deleteButton.addEventListener("click", function () {
+                removeFromCart(productoId);
+            });
 
-            // Adiciona os botões ao contêiner
             buttonCard.appendChild(addButton);
-            buttonCard.appendChild(removeButton);
+            buttonCard.appendChild(deleteButton);
 
-            // Continua adicionando os elementos
+            // Ensambla el modal
             colDetails.appendChild(cardBody);
             colDetails.appendChild(buttonCard);
-
             row.appendChild(colImg);
             row.appendChild(colDetails);
-
             carritoItem.appendChild(row);
-
             carritoContainer.appendChild(carritoItem);
         }
 
+        // Renderizar total
         const totalContainer = document.createElement("div");
         totalContainer.className = "total-info d-flex justify-content-between mt-3";
 
         const totalItemsLabel = document.createElement("span");
-        totalItemsLabel.textContent = `Total de itens: ${totalItems}`;
+        totalItemsLabel.textContent = `Total de ítems: ${totalItems}`;
 
         const totalAmountLabel = document.createElement("span");
         totalAmountLabel.textContent = `Total a pagar: U$${total.toFixed(2)}`;
@@ -300,7 +302,7 @@ function renderCartModal() {
     }
 }
 
-// Funcion para add un item al carrito
+// Función para agregar un producto al carrito
 function agregarAlCarrito(productId) {
     const producto = productosGlobal.find(p => p.id === productId);
     if (!producto) return;
@@ -316,61 +318,49 @@ function agregarAlCarrito(productId) {
         carrito[productId] = { ...producto, cantidad: 1 };
         alert(`El producto "${producto.name}" fue agregado al carrito con éxito!`);
     }
-
+    //Salvar o carrinho atualizado no localStorage
     guardarCarritoNoLocalStorage();
-    renderCartModal();
 }
-
-// Funcion para add un item al carrito
-function checkoutItem(productId) {
-    const producto = productosGlobal.find(p => p.id === productId);
-    if (!producto) return;
-
-    // Verifica se ainda há estoque disponível
-    if (carrito[productId].cantidad < producto.stock) {
-        carrito[productId].cantidad++;  // Aumenta a quantidade no carrinho
-        producto.stock--;  // Reduz o estoque do produto
-    } else {
-        alert("Estoque insuficiente!");
-    }
-
-    guardarCarritoNoLocalStorage();  // Salva localStorage
-    renderCartModal();  // actualizar os valores
-}
-
-// Funcion para remover la cantidad de item
-function removeFromCart(productId) {
-    const item = carrito[productId];
+// Función para aumentar la cantidad de un producto
+function checkoutItem(productoId) {
+    const producto = carrito[productoId];
     
-    if (item.cantidad > 1) {
-        //Dicto la cantidad
-        item.cantidad--;
+    // Verifica se a quantidade do produto no carrinho já atingiu o limite do estoque
+    if (producto && producto.cantidad < producto.stock) {
+        producto.cantidad++;
+        guardarCarritoNoLocalStorage();
+        renderCartModal();
     } else {
-        //Borro el item de carrito 
-        delete carrito[productId];
+        alert("Não é possível adicionar mais deste produto. Estoque insuficiente!");
     }
-    
-    guardarCarritoNoLocalStorage();
-    renderCartModal();
 }
 
-//Funcion para limpiar el carrito todo 
+// Función para eliminar un producto del carrito
+function removeFromCart(productoId) {
+    if (carrito[productoId]) {
+        carrito[productoId].cantidad--;
+        if (carrito[productoId].cantidad === 0) {
+            delete carrito[productoId];
+        }
+        guardarCarritoNoLocalStorage();
+        renderCartModal();
+    }
+}
+
+// Función para vaciar el carrito
 function clearCart() {
     carrito = {};
     guardarCarritoNoLocalStorage();
     renderCartModal();
 }
 
-// Função de simular o checkout
+// Función de checkout
 function checkout() {
-    // Verifica se o carrinho está vazio
-    if (Object.keys(carrito).length === 0) {
-        alert("O carrinho está vazio! Adicione produtos antes de finalizar a compra.");
-        return; // Interrompe a execução se o carrinho estiver vazio
+    if (Object.keys(carrito).length > 0) {
+        alert("Gracias por tu compra!");
+        clearCart();
+    } else {
+        alert("Tu carrito está vacío");
     }
-
-    // Caso o carrinho tenha itens, executa o checkout
-    alert("Compra realizada com sucesso!");
-    clearCart(); // Limpa o carrinho
 }
 
