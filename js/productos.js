@@ -89,26 +89,26 @@ class Productos {
         fetch("productos.json")
             .then((response) => response.json())
             .then((data) => {
-                productosGlobal = data; // Armazena los productos en la variable global
+                productosGlobal = data; // Armazena os produtos na variável global
                 let productosFiltrados = data;
 
-                // Filtragem de categoria
+                // Filtro por categoria
                 if (filtrarCategorias && filtrarCategorias !== "all") {
-                    productosFiltrados = data.filter(
+                    productosFiltrados = productosFiltrados.filter(
                         (producto) => producto.categoria === filtrarCategorias
                     );
                 }
 
-                // Filtragem por preço
+                // Ordenação por preço
                 if (ordenarPorPrecio === "maxValor") {
-                    productosFiltrados = data.sort((a, b) => b.price - a.price);
+                    productosFiltrados.sort((a, b) => b.price - a.price);
                 } else if (ordenarPorPrecio === "minValor") {
-                    productosFiltrados = data.sort((a, b) => a.price - b.price);
+                    productosFiltrados.sort((a, b) => a.price - b.price);
                 }
 
                 // Renderizar os produtos filtrados
                 const catalogo = document.getElementById(catalogoId);
-                catalogo.innerHTML = ""; // Limpar o conteúdo anterior
+                catalogo.innerHTML = ""; // Limpa o conteúdo anterior
 
                 productosFiltrados.forEach((item) => {
                     const producto = new Productos(
@@ -134,12 +134,21 @@ document.addEventListener("DOMContentLoaded", () => {
     Productos.renderCatalog("catalogo");
 });
 
-// Evento para selecionar la categoría y filtrar los productos
-document.getElementById("categoria").addEventListener("change", (event) => {
-    const categoriaSeleccionada = event.target.value;
-    if (categoriaSeleccionada === "maxValor" || categoriaSeleccionada === "minValor") {
-        Productos.renderCatalog("catalogo", "all", categoriaSeleccionada);
-    } else {
+// Filtros combinados
+const categoriaSelect = document.getElementById("categoria");
+const preciosSelect = document.getElementById("precios");
+
+function aplicarFiltros() {
+    const categoriaSeleccionada = categoriaSelect.value || "all";
+    const precioSeleccionado = preciosSelect.value || null;
+
+    if (precioSeleccionado === "clear") {
+        preciosSelect.value = "";
         Productos.renderCatalog("catalogo", categoriaSeleccionada);
+    } else {
+        Productos.renderCatalog("catalogo", categoriaSeleccionada, precioSeleccionado);
     }
-});
+}
+
+categoriaSelect.addEventListener("change", aplicarFiltros);
+preciosSelect.addEventListener("change", aplicarFiltros);

@@ -37,6 +37,15 @@ a, li{
     font-style: normal;
 }
 
+#categoria{
+    width: 13%;
+    height: 10%;
+}
+#precios{
+    width: 12%;
+    height: 40px;
+}
+
 .hidden {
     opacity: 0;
     transform: translateY(50px); /* Para mover os elementos para baixo */
