@@ -331,7 +331,7 @@ function checkoutItem(productoId) {
         guardarCarritoNoLocalStorage();
         renderCartModal();
     } else {
-        alert("Não é possível adicionar mais deste produto. Estoque insuficiente!");
+        alert("No es posible agregar mas de este producto, stock insuficiente!");
     }
 }
 
